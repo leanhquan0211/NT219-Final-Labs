@@ -1,0 +1,71 @@
+# Build directories
+build/
+build-*/
+out/
+cmake-build-*/
+
+# Binaries
+bin/windows-mingw/*
+bin/windows-msvc/*
+bin/linux/*
+
+# Keep bin folders
+!bin/windows-mingw/.gitkeep
+!bin/windows-msvc/.gitkeep
+!bin/linux/.gitkeep
+
+# CMake generated files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+compile_commands.json
+CTestTestfile.cmake
+Testing/
+
+# Visual Studio / VS Code
+.vs/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# Object files
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.so
+*.dylib
+*.exe
+*.pdb
+*.ilk
+*.exp
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Benchmark generated results
+benchmarks/results/*.csv
+benchmarks/plots/*.png
+
+# Secrets / private keys generated during testing
+samples/keys/*
+!samples/keys/.gitkeep
+
+# Report exported files
+report/*.pdf
+report/*.docx
