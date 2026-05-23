@@ -9,6 +9,8 @@ add_executable(nt219_common_tests
     common/test_sample_generator.cpp
     common/test_stats.cpp
     lab1/test_aes_crypto.cpp
+    lab1/test_aes_crypto_vectors.cpp
+    lab1/test_aes_crypto_negative.cpp
 )
 
 target_link_libraries(nt219_common_tests
