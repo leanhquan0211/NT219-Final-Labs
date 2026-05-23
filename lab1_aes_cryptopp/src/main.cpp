@@ -8,6 +8,8 @@
 #include "lab1/aes_crypto.hpp"
 #include <chrono>
 #include <cstdint>
+#include <cryptopp/sha.h>
+#include <filesystem>
 #include <iostream>
 #include <stdexcept>
 #include <string>
@@ -21,20 +23,22 @@ void print_aestool_help() {
         << "aestool\n"
         << "Lab 1 - Symmetric Encryption with Crypto++\n\n"
         << "Commands:\n"
-        << "  keygen   --size 16|24|32 --out key.bin [--encode raw|hex|base64]\n"
-        << "  encrypt  --mode ecb|cbc|cfb|ofb|ctr|gcm|ccm --key KEYFILE|--key-hex HEX [--iv-hex HEX|--nonce-hex HEX] [--in FILE|--text TEXT] [--out FILE] [--meta FILE] [--encode hex|base64|raw]\n"
-        << "  decrypt  --mode ecb|cbc|cfb|ofb|ctr|gcm|ccm --key KEYFILE|--key-hex HEX [--iv-hex HEX|--nonce-hex HEX|--meta FILE] --in FILE [--out FILE]\n"
+        << "  keygen   --size 16|24|32|64 --out key.bin [--encode raw|hex|base64]\n"
+        << "  encrypt  --mode ecb|cbc|cfb|ofb|ctr|gcm|ccm|xts --key KEYFILE|--key-hex HEX [--iv-hex HEX|--nonce-hex HEX] [--in FILE|--text TEXT] [--out FILE] [--meta FILE] [--encode hex|base64|raw]\n"
+        << "  decrypt  --mode ecb|cbc|cfb|ofb|ctr|gcm|ccm|xts --key KEYFILE|--key-hex HEX [--iv-hex HEX|--nonce-hex HEX|--meta FILE] --in FILE [--out FILE]\n"
         << "  kat      --kat vectors.json\n"
         << "  bench    --mode MODE --key KEYFILE|--key-hex HEX [--size BYTES] [--runs N]\n"
         << "  selftest\n"
         << "  version\n\n"
         << "Notes:\n"
-        << "  - CBC/CFB/OFB/CTR use 16-byte IV.\n"
+        << "  - CBC/CFB/OFB/CTR/XTS use 16-byte IV/tweak.\n"
         << "  - GCM/CCM use 12-byte nonce by default.\n"
         << "  - GCM/CCM ciphertext files contain ciphertext || authentication tag.\n"
         << "  - If IV/nonce is omitted during encryption, aestool generates it securely and saves it to --meta JSON.\n"
+        << "  - For CTR/GCM/CCM, use --nonce-db FILE to reject repeated key+nonce pairs.\n"
+        << "  - For NIST KATs, cases may set padding=none.\n"
         << "  - ECB prints a warning and blocks inputs larger than 16 KiB unless --allow-ecb is used.\n"
-        << "  - XTS is reserved for the next Lab 1 patch.\n";
+        << "  - XTS is implemented for disk-sector style data and provides confidentiality only, not integrity.\n";
 }
 
 std::size_t parse_size_value(const std::string& text, std::size_t default_value) {
@@ -156,9 +160,46 @@ void write_metadata(const nt219::CliParser& cli, nt219::lab1::AesMode mode, cons
     nt219::write_json_file(meta_path, meta);
 }
 
+std::string sha256_hex(const ByteVector& data) {
+    CryptoPP::SHA256 hash;
+    ByteVector digest(hash.DigestSize());
+    hash.CalculateDigest(reinterpret_cast<CryptoPP::byte*>(digest.data()), reinterpret_cast<const CryptoPP::byte*>(data.data()), data.size());
+    return nt219::hex_encode(digest);
+}
+
+void enforce_nonce_reuse_policy(const nt219::CliParser& cli, nt219::lab1::AesMode mode, const ByteVector& key, const ByteVector& iv) {
+    const auto nonce_db_path = cli.get_option("nonce-db");
+    if (nonce_db_path.empty() || !nt219::lab1::is_nonce_reuse_sensitive_mode(mode)) return;
+
+    nlohmann::json db;
+    const std::filesystem::path path(nonce_db_path);
+    if (std::filesystem::exists(path)) db = nt219::read_json_file(path);
+    if (!db.is_object()) db = nlohmann::json::object();
+    if (!db.contains("entries") || !db["entries"].is_array()) db["entries"] = nlohmann::json::array();
+
+    const std::string mode_name = nt219::lab1::aes_mode_to_string(mode);
+    const std::string key_sha256 = sha256_hex(key);
+    const std::string nonce_hex = nt219::hex_encode(iv);
+
+    for (const auto& entry : db["entries"]) {
+        if (entry.value("mode", "") == mode_name &&
+            entry.value("key_sha256", "") == key_sha256 &&
+            entry.value("nonce_hex", "") == nonce_hex) {
+            throw std::runtime_error("Nonce reuse detected for AES-" + mode_name + " with this key. Refusing encryption.");
+        }
+    }
+
+    nlohmann::json entry;
+    entry["mode"] = mode_name;
+    entry["key_sha256"] = key_sha256;
+    entry["nonce_hex"] = nonce_hex;
+    db["entries"].push_back(entry);
+    nt219::write_json_file(path, db);
+}
+
 int command_keygen(const nt219::CliParser& cli) {
     const auto size = parse_size_value(cli.get_option("size"), 32);
-    if (size != 16 && size != 24 && size != 32) throw std::runtime_error("AES key size must be 16, 24, or 32 bytes");
+    if (size != 16 && size != 24 && size != 32 && size != 64) throw std::runtime_error("AES key size must be 16, 24, 32, or 64 bytes");
     const auto key = nt219::random_bytes_cryptopp(size);
     write_output_or_console(cli, key, nt219::Encoding::Hex);
     return 0;
@@ -175,6 +216,7 @@ int command_encrypt(const nt219::CliParser& cli) {
     request.input = load_input_bytes(cli);
     request.allow_ecb = cli.has_flag("allow-ecb");
     request.tag_size = load_tag_size(cli, mode, false);
+    enforce_nonce_reuse_policy(cli, mode, request.key, request.iv);
     const auto ciphertext = nt219::lab1::aes_encrypt(request);
     write_metadata(cli, mode, request.key, request.iv, request.aad, request.tag_size);
     write_output_or_console(cli, ciphertext, nt219::Encoding::Hex);
@@ -217,6 +259,7 @@ int command_kat(const nt219::CliParser& cli) {
         request.key = nt219::hex_decode(item.at("key").get<std::string>());
         request.input = nt219::hex_decode(item.at("plaintext").get<std::string>());
         request.allow_ecb = true;
+        request.use_padding = !(item.value("padding", std::string("pkcs7")) == "none" || item.value("no_padding", false));
         if (item.contains("iv")) request.iv = nt219::hex_decode(item.at("iv").get<std::string>());
         if (item.contains("aad")) request.aad = nt219::hex_decode(item.at("aad").get<std::string>());
         if (item.contains("tag_size")) request.tag_size = item.at("tag_size").get<std::size_t>();
@@ -264,7 +307,7 @@ int main(int argc, char** argv) {
         nt219::CliParser cli(argc, argv);
         if (argc == 1 || cli.has_flag("help")) { print_aestool_help(); return 0; }
         const std::string command = cli.command();
-        if (command == "version") { std::cout << "aestool version 0.2.0\n"; return 0; }
+        if (command == "version") { std::cout << "aestool version 0.3.0\n"; return 0; }
         if (command == "selftest") {
             const bool ok = nt219::lab1::run_lab1_basic_selftest();
             std::cout << "aestool selftest: " << (ok ? "PASS" : "FAIL") << "\n";

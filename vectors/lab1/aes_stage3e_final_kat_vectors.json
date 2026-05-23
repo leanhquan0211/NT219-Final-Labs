@@ -1,0 +1,51 @@
+{
+  "schema": "nt219-lab1-kat-v1",
+  "description": "Final Lab 1 KAT smoke set. CBC uses no-padding mode for NIST SP 800-38A exact matching. GCM ciphertext includes ciphertext || tag.",
+  "cases": [
+    {
+      "name": "AES-128-CBC NIST SP 800-38A first block no padding",
+      "mode": "cbc",
+      "padding": "none",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "000102030405060708090a0b0c0d0e0f",
+      "plaintext": "6bc1bee22e409f96e93d7e117393172a",
+      "ciphertext": "7649abac8119b246cee98e9b12e9197d"
+    },
+    {
+      "name": "AES-128-CTR NIST SP 800-38A four blocks",
+      "mode": "ctr",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff",
+      "plaintext": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710",
+      "ciphertext": "874d6191b620e3261bef6864990db6ce9806f66b7970fdff8617187bb9fffdff5ae4df3edbd5d35e5b4f09020db03eab1e031dda2fbe03d1792170a0f3009cee"
+    },
+    {
+      "name": "AES-128-OFB NIST SP 800-38A four blocks",
+      "mode": "ofb",
+      "key": "2b7e151628aed2a6abf7158809cf4f3c",
+      "iv": "000102030405060708090a0b0c0d0e0f",
+      "plaintext": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e5130c81c46a35ce411e5fbc1191a0a52eff69f2445df4f9b17ad2b417be66c3710",
+      "ciphertext": "3b3fd92eb72dad20333449f8e83cfb4a7789508d16918f03f53c52dac54ed8259740051e9c5fecf64344f7a82260edcc304c6528f659c77866a510d9c1d6ae5e"
+    },
+    {
+      "name": "AES-128-GCM NIST empty plaintext tag only",
+      "mode": "gcm",
+      "key": "00000000000000000000000000000000",
+      "iv": "000000000000000000000000",
+      "aad": "",
+      "plaintext": "",
+      "ciphertext": "58e2fccefa7e3061367f1d57a4e7455a",
+      "tag_size": 16
+    },
+    {
+      "name": "AES-128-GCM NIST one zero block ciphertext plus tag",
+      "mode": "gcm",
+      "key": "00000000000000000000000000000000",
+      "iv": "000000000000000000000000",
+      "aad": "",
+      "plaintext": "00000000000000000000000000000000",
+      "ciphertext": "0388dace60b6a392f328c2b971b2fe78ab6e47d42cec13bdf53a67b21257bddf",
+      "tag_size": 16
+    }
+  ]
+}

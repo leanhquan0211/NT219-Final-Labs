@@ -25,12 +25,14 @@ struct AesRequest {
     std::vector<std::uint8_t> aad;
     std::vector<std::uint8_t> input;
     bool allow_ecb{false};
+    bool use_padding{true};
     std::size_t tag_size{16};
 };
 
 AesMode parse_aes_mode(const std::string& value);
 std::string aes_mode_to_string(AesMode mode);
 bool is_aead_mode(AesMode mode);
+bool is_nonce_reuse_sensitive_mode(AesMode mode);
 bool mode_requires_iv(AesMode mode);
 std::size_t required_iv_size(AesMode mode);
 void validate_aes_key(const std::vector<std::uint8_t>& key, AesMode mode);

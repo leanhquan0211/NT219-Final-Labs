@@ -5,6 +5,7 @@
 #include <cryptopp/filters.h>
 #include <cryptopp/gcm.h>
 #include <cryptopp/modes.h>
+#include <cryptopp/xts.h>
 #include <algorithm>
 #include <cctype>
 #include <stdexcept>
@@ -24,6 +25,19 @@ const CryptoPP::byte* bytes_ptr(const ByteVector& data) {
     return reinterpret_cast<const CryptoPP::byte*>(data.data());
 }
 
+CryptoPP::BlockPaddingSchemeDef::BlockPaddingScheme padding_scheme(const AesRequest& request) {
+    // ECB and CBC are block modes and may use PKCS#7 padding for normal file encryption.
+    // CFB/OFB/CTR/XTS behave as streaming/tweakable modes in this tool and must not add or
+    // remove padding. Keeping them no-padding also makes NIST SP 800-38A vectors match exactly.
+    if (request.mode == AesMode::Ecb || request.mode == AesMode::Cbc) {
+        return request.use_padding
+            ? CryptoPP::StreamTransformationFilter::PKCS_PADDING
+            : CryptoPP::StreamTransformationFilter::NO_PADDING;
+    }
+
+    return CryptoPP::StreamTransformationFilter::NO_PADDING;
+}
+
 template <typename EncryptionType>
 ByteVector encrypt_stream_mode(const AesRequest& request) {
     EncryptionType enc;
@@ -34,7 +48,7 @@ ByteVector encrypt_stream_mode(const AesRequest& request) {
     }
     std::string output;
     CryptoPP::StringSource source(bytes_ptr(request.input), request.input.size(), true,
-        new CryptoPP::StreamTransformationFilter(enc, new CryptoPP::StringSink(output)));
+        new CryptoPP::StreamTransformationFilter(enc, new CryptoPP::StringSink(output), padding_scheme(request)));
     return ByteVector(output.begin(), output.end());
 }
 
@@ -48,7 +62,7 @@ ByteVector decrypt_stream_mode(const AesRequest& request) {
     }
     std::string output;
     CryptoPP::StringSource source(bytes_ptr(request.input), request.input.size(), true,
-        new CryptoPP::StreamTransformationFilter(dec, new CryptoPP::StringSink(output)));
+        new CryptoPP::StreamTransformationFilter(dec, new CryptoPP::StringSink(output), padding_scheme(request)));
     return ByteVector(output.begin(), output.end());
 }
 
@@ -108,6 +122,30 @@ ByteVector decrypt_ccm(const AesRequest& request) {
     filter.ChannelMessageEnd(CryptoPP::DEFAULT_CHANNEL);
     return ByteVector(output.begin(), output.end());
 }
+
+ByteVector encrypt_xts(const AesRequest& request) {
+    if (request.input.size() < CryptoPP::AES::BLOCKSIZE) {
+        throw std::runtime_error("AES-XTS input must be at least one AES block");
+    }
+    CryptoPP::XTS_Mode<CryptoPP::AES>::Encryption enc;
+    enc.SetKeyWithIV(bytes_ptr(request.key), request.key.size(), bytes_ptr(request.iv), request.iv.size());
+    std::string output;
+    CryptoPP::StringSource source(bytes_ptr(request.input), request.input.size(), true,
+        new CryptoPP::StreamTransformationFilter(enc, new CryptoPP::StringSink(output), CryptoPP::StreamTransformationFilter::NO_PADDING));
+    return ByteVector(output.begin(), output.end());
+}
+
+ByteVector decrypt_xts(const AesRequest& request) {
+    if (request.input.size() < CryptoPP::AES::BLOCKSIZE) {
+        throw std::runtime_error("AES-XTS input must be at least one AES block");
+    }
+    CryptoPP::XTS_Mode<CryptoPP::AES>::Decryption dec;
+    dec.SetKeyWithIV(bytes_ptr(request.key), request.key.size(), bytes_ptr(request.iv), request.iv.size());
+    std::string output;
+    CryptoPP::StringSource source(bytes_ptr(request.input), request.input.size(), true,
+        new CryptoPP::StreamTransformationFilter(dec, new CryptoPP::StringSink(output), CryptoPP::StreamTransformationFilter::NO_PADDING));
+    return ByteVector(output.begin(), output.end());
+}
 }
 
 AesMode parse_aes_mode(const std::string& value) {
@@ -138,6 +176,7 @@ std::string aes_mode_to_string(AesMode mode) {
 }
 
 bool is_aead_mode(AesMode mode) { return mode == AesMode::Gcm || mode == AesMode::Ccm; }
+bool is_nonce_reuse_sensitive_mode(AesMode mode) { return mode == AesMode::Ctr || mode == AesMode::Gcm || mode == AesMode::Ccm; }
 bool mode_requires_iv(AesMode mode) { return mode != AesMode::Ecb; }
 
 std::size_t required_iv_size(AesMode mode) {
@@ -184,7 +223,7 @@ ByteVector aes_encrypt(const AesRequest& request) {
         case AesMode::Ctr: return encrypt_stream_mode<CryptoPP::CTR_Mode<CryptoPP::AES>::Encryption>(request);
         case AesMode::Gcm: return encrypt_gcm(request);
         case AesMode::Ccm: return encrypt_ccm(request);
-        case AesMode::Xts: throw std::runtime_error("AES-XTS is reserved for the next Lab 1 patch");
+        case AesMode::Xts: return encrypt_xts(request);
     }
     throw std::runtime_error("Unknown AES mode");
 }
@@ -201,7 +240,7 @@ ByteVector aes_decrypt(const AesRequest& request) {
         case AesMode::Ctr: return decrypt_stream_mode<CryptoPP::CTR_Mode<CryptoPP::AES>::Decryption>(request);
         case AesMode::Gcm: return decrypt_gcm(request);
         case AesMode::Ccm: return decrypt_ccm(request);
-        case AesMode::Xts: throw std::runtime_error("AES-XTS is reserved for the next Lab 1 patch");
+        case AesMode::Xts: return decrypt_xts(request);
     }
     throw std::runtime_error("Unknown AES mode");
 }
@@ -225,7 +264,17 @@ bool run_lab1_basic_selftest() {
     gcm.input = {'h','e','l','l','o'};
     const auto c = aes_encrypt(gcm);
     gcm.input = c;
-    return aes_decrypt(gcm) == std::vector<std::uint8_t>({'h','e','l','l','o'});
+    if (aes_decrypt(gcm) != std::vector<std::uint8_t>({'h','e','l','l','o'})) return false;
+
+    AesRequest xts;
+    xts.mode = AesMode::Xts;
+    xts.key = std::vector<std::uint8_t>(32, 0x33);
+    xts.iv = std::vector<std::uint8_t>(16, 0x44);
+    xts.input = std::vector<std::uint8_t>(32, 0x55);
+    xts.use_padding = false;
+    const auto xts_c = aes_encrypt(xts);
+    xts.input = xts_c;
+    return aes_decrypt(xts) == std::vector<std::uint8_t>(32, 0x55);
 }
 
 }

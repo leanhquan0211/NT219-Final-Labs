@@ -11,6 +11,7 @@ add_executable(nt219_common_tests
     lab1/test_aes_crypto.cpp
     lab1/test_aes_crypto_vectors.cpp
     lab1/test_aes_crypto_negative.cpp
+    lab1/test_aes_crypto_completion.cpp
 )
 
 target_link_libraries(nt219_common_tests

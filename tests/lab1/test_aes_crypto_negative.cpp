@@ -65,12 +65,20 @@ TEST_CASE("Lab 1 blocks large ECB input unless explicitly allowed") {
     REQUIRE_NOTHROW(nt219::lab1::aes_encrypt(request));
 }
 
-TEST_CASE("Lab 1 currently reports XTS as reserved") {
+TEST_CASE("Lab 1 AES-XTS is implemented and supports round trip") {
     nt219::lab1::AesRequest request;
     request.mode = nt219::lab1::AesMode::Xts;
     request.key = std::vector<std::uint8_t>(32, 0x00);
     request.iv = std::vector<std::uint8_t>(16, 0x00);
     request.input = std::vector<std::uint8_t>(32, 0x41);
+    request.use_padding = false;
 
-    REQUIRE_THROWS_AS(nt219::lab1::aes_encrypt(request), std::runtime_error);
+    const auto plaintext = request.input;
+    const auto ciphertext = nt219::lab1::aes_encrypt(request);
+
+    REQUIRE(ciphertext.size() == plaintext.size());
+    REQUIRE(ciphertext != plaintext);
+
+    request.input = ciphertext;
+    REQUIRE(nt219::lab1::aes_decrypt(request) == plaintext);
 }
