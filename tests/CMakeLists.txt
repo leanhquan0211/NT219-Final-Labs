@@ -8,11 +8,13 @@ add_executable(nt219_common_tests
     common/test_random.cpp
     common/test_sample_generator.cpp
     common/test_stats.cpp
+    lab1/test_aes_crypto.cpp
 )
 
 target_link_libraries(nt219_common_tests
     PRIVATE
         nt219_common
+        nt219_lab1_aes
         Catch2::Catch2WithMain
 )
 
