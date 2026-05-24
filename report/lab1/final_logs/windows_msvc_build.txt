@@ -1,0 +1,5 @@
+-- Configuring done (0.1s)
+-- Generating done (0.1s)
+-- Build files have been written to: N:/UIT/HK2/NT219/Final_lab/build-msvc
+ninja: no work to do.
+Windows MSVC build completed.

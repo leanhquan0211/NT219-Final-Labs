@@ -1,0 +1,21 @@
+
+>>> /mnt/n/UIT/HK2/NT219/Final_lab/build-linux/bin/aestool selftest
+aestool selftest: PASS
+
+>>> /mnt/n/UIT/HK2/NT219/Final_lab/build-linux/bin/aestool kat --kat vectors/lab1/aes_stage3b_kat_vectors.json
+[PASS] AES-128-CTR NIST SP 800-38A four blocks
+[PASS] AES-128-OFB NIST SP 800-38A four blocks
+Summary: passed=2 failed=0
+
+>>> /mnt/n/UIT/HK2/NT219/Final_lab/build-linux/bin/aestool keygen --size 32 --out /mnt/n/UIT/HK2/NT219/Final_lab/samples/keys/lab1_final_aes256_linux.key
+
+>>> /mnt/n/UIT/HK2/NT219/Final_lab/build-linux/bin/aestool encrypt --mode gcm --key /mnt/n/UIT/HK2/NT219/Final_lab/samples/keys/lab1_final_aes256_linux.key --text Lab1 final verification --aad-text stage3d --out /mnt/n/UIT/HK2/NT219/Final_lab/samples/lab1_final_gcm_linux.ct --meta /mnt/n/UIT/HK2/NT219/Final_lab/samples/lab1_final_gcm_linux.json
+
+>>> /mnt/n/UIT/HK2/NT219/Final_lab/build-linux/bin/aestool decrypt --mode gcm --key /mnt/n/UIT/HK2/NT219/Final_lab/samples/keys/lab1_final_aes256_linux.key --in /mnt/n/UIT/HK2/NT219/Final_lab/samples/lab1_final_gcm_linux.ct --aad-text stage3d --meta /mnt/n/UIT/HK2/NT219/Final_lab/samples/lab1_final_gcm_linux.json --out /mnt/n/UIT/HK2/NT219/Final_lab/samples/lab1_final_gcm_recovered_linux.txt
+
+>>> /mnt/n/UIT/HK2/NT219/Final_lab/build-linux/bin/aestool decrypt --mode gcm --key /mnt/n/UIT/HK2/NT219/Final_lab/samples/keys/lab1_final_aes256_linux.key --in /mnt/n/UIT/HK2/NT219/Final_lab/samples/lab1_final_gcm_tampered_linux.ct --aad-text stage3d --meta /mnt/n/UIT/HK2/NT219/Final_lab/samples/lab1_final_gcm_linux.json --out /mnt/n/UIT/HK2/NT219/Final_lab/samples/lab1_final_tampered_out_linux.txt
+Fatal error: HashVerificationFilter: message hash or MAC not valid
+Expected failure observed. Exit code: 1
+
+Lab 1 Linux final verification log written to:
+/mnt/n/UIT/HK2/NT219/Final_lab/report/lab1/lab1_final_verification_log_linux.md

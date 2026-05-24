@@ -1,0 +1,28 @@
+
+>>> N:\UIT\HK2\NT219\Final_lab\build-mingw\bin\aestool.exe selftest
+aestool selftest: PASS
+
+>>> N:\UIT\HK2\NT219\Final_lab\build-mingw\bin\aestool.exe kat --kat vectors\lab1\aes_stage3b_kat_vectors.json
+[PASS] AES-128-CTR NIST SP 800-38A four blocks
+[PASS] AES-128-OFB NIST SP 800-38A four blocks
+Summary: passed=2 failed=0
+
+>>> N:\UIT\HK2\NT219\Final_lab\build-mingw\bin\aestool.exe keygen --size 32 --out N:\UIT\HK2\NT219\Final_lab\samples\keys\lab1_final_aes256.key
+
+>>> N:\UIT\HK2\NT219\Final_lab\build-mingw\bin\aestool.exe encrypt --mode gcm --key N:\UIT\HK2\NT219\Final_lab\samples\keys\lab1_final_aes256.key --text Lab1 final verification --aad-text stage3d --out N:\UIT\HK2\NT219\Final_lab\samples\lab1_final_gcm.ct --meta N:\UIT\HK2\NT219\Final_lab\samples\lab1_final_gcm.json
+
+>>> N:\UIT\HK2\NT219\Final_lab\build-mingw\bin\aestool.exe decrypt --mode gcm --key N:\UIT\HK2\NT219\Final_lab\samples\keys\lab1_final_aes256.key --in N:\UIT\HK2\NT219\Final_lab\samples\lab1_final_gcm.ct --aad-text stage3d --meta N:\UIT\HK2\NT219\Final_lab\samples\lab1_final_gcm.json --out N:\UIT\HK2\NT219\Final_lab\samples\lab1_final_gcm_recovered.txt
+
+>>> N:\UIT\HK2\NT219\Final_lab\build-mingw\bin\aestool.exe decrypt --mode gcm --key N:\UIT\HK2\NT219\Final_lab\samples\keys\lab1_final_aes256.key --in N:\UIT\HK2\NT219\Final_lab\samples\lab1_final_gcm_tampered.ct --aad-text stage3d --meta N:\UIT\HK2\NT219\Final_lab\samples\lab1_final_gcm.json --out N:\UIT\HK2\NT219\Final_lab\samples\lab1_final_tampered_out.txt
+Fatal error: HashVerificationFilter: message hash or MAC not valid
+Expected failure observed. Exit code: 1
+
+>>> N:\UIT\HK2\NT219\Final_lab\build-mingw\bin\aestool.exe keygen --size 16 --out N:\UIT\HK2\NT219\Final_lab\samples\keys\lab1_final_ecb.key
+
+>>> N:\UIT\HK2\NT219\Final_lab\build-mingw\bin\aestool.exe encrypt --mode ecb --key N:\UIT\HK2\NT219\Final_lab\samples\keys\lab1_final_ecb.key --in N:\UIT\HK2\NT219\Final_lab\samples\lab1_final_ecb_large.bin --out N:\UIT\HK2\NT219\Final_lab\samples\lab1_final_ecb_large.ct
+WARNING: ECB mode is insecure and leaks plaintext patterns.
+Fatal error: ECB is blocked for inputs larger than 16 KiB unless --allow-ecb is used
+Expected failure observed. Exit code: 1
+
+Lab 1 final verification log written to:
+N:\UIT\HK2\NT219\Final_lab\report\lab1\lab1_final_verification_log.md

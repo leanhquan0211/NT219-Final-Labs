@@ -1,0 +1,93 @@
+Test project N:/UIT/HK2/NT219/Final_lab/build-msvc
+      Start  1: parse encoding rejects unsupported value
+ 1/44 Test  #1: parse encoding rejects unsupported value ........................   Passed    0.01 sec
+      Start  2: sample generator returns default benchmark specs
+ 2/44 Test  #2: sample generator returns default benchmark specs ................   Passed    0.01 sec
+      Start  3: openssl random bytes returns requested size
+ 3/44 Test  #3: openssl random bytes returns requested size .....................   Passed    0.02 sec
+      Start  4: stats compute mean median and stddev
+ 4/44 Test  #4: stats compute mean median and stddev ............................   Passed    0.01 sec
+      Start  5: encode and decode bytes with raw
+ 5/44 Test  #5: encode and decode bytes with raw ................................   Passed    0.01 sec
+      Start  6: base64 decode rejects malformed input
+ 6/44 Test  #6: base64 decode rejects malformed input ...........................   Passed    0.02 sec
+      Start  7: Lab 1 AES-CFB round trip works with arbitrary-length input
+ 7/44 Test  #7: Lab 1 AES-CFB round trip works with arbitrary-length input ......   Passed    0.01 sec
+      Start  8: Lab 1 identifies nonce-reuse sensitive modes
+ 8/44 Test  #8: Lab 1 identifies nonce-reuse sensitive modes ....................   Passed    0.01 sec
+      Start  9: Lab 1 AES CBC round trip
+ 9/44 Test  #9: Lab 1 AES CBC round trip ........................................   Passed    0.01 sec
+      Start 10: Lab 1 AES GCM detects tampering
+10/44 Test #10: Lab 1 AES GCM detects tampering .................................   Passed    0.01 sec
+      Start 11: Lab 1 AES-OFB matches NIST SP 800-38A multi-block vector
+11/44 Test #11: Lab 1 AES-OFB matches NIST SP 800-38A multi-block vector ........   Passed    0.01 sec
+      Start 12: random bytes supports zero length
+12/44 Test #12: random bytes supports zero length ...............................   Passed    0.01 sec
+      Start 13: Lab 1 rejects AAD for non-AEAD modes
+13/44 Test #13: Lab 1 rejects AAD for non-AEAD modes ............................   Passed    0.01 sec
+      Start 14: sample generator creates deterministic data
+14/44 Test #14: sample generator creates deterministic data .....................   Passed    0.01 sec
+      Start 15: Lab 1 rejects invalid key size
+15/44 Test #15: Lab 1 rejects invalid key size ..................................   Passed    0.01 sec
+      Start 16: Lab 1 rejects invalid IV size
+16/44 Test #16: Lab 1 rejects invalid IV size ...................................   Passed    0.01 sec
+      Start 17: base64 encode basic values
+17/44 Test #17: base64 encode basic values ......................................   Passed    0.01 sec
+      Start 18: base64 decode ignores whitespace
+18/44 Test #18: base64 decode ignores whitespace ................................   Passed    0.01 sec
+      Start 19: Lab 1 rejects invalid AES key lengths
+19/44 Test #19: Lab 1 rejects invalid AES key lengths ...........................   Passed    0.01 sec
+      Start 20: Lab 1 AES-XTS is implemented and supports round trip
+20/44 Test #20: Lab 1 AES-XTS is implemented and supports round trip ............   Passed    0.01 sec
+      Start 21: Lab 1 AES-CBC supports no-padding NIST-style block encryption
+21/44 Test #21: Lab 1 AES-CBC supports no-padding NIST-style block encryption ...   Passed    0.01 sec
+      Start 22: Lab 1 GCM rejects tampered ciphertext
+22/44 Test #22: Lab 1 GCM rejects tampered ciphertext ...........................   Passed    0.01 sec
+      Start 23: encode and decode bytes with base64
+23/44 Test #23: encode and decode bytes with base64 .............................   Passed    0.01 sec
+      Start 24: sample generator can create benchmark files
+24/44 Test #24: sample generator can create benchmark files .....................   Passed    0.03 sec
+      Start 25: cryptopp random bytes returns requested size
+25/44 Test #25: cryptopp random bytes returns requested size ....................   Passed    0.01 sec
+      Start 26: stats median supports even sample count
+26/44 Test #26: stats median supports even sample count .........................   Passed    0.01 sec
+      Start 27: hex encode lower-case output
+27/44 Test #27: hex encode lower-case output ....................................   Passed    0.01 sec
+      Start 28: encode and decode bytes with hex
+28/44 Test #28: encode and decode bytes with hex ................................   Passed    0.01 sec
+      Start 29: Lab 1 selftest passes
+29/44 Test #29: Lab 1 selftest passes ...........................................   Passed    0.01 sec
+      Start 30: json pretty dump returns indented json
+30/44 Test #30: json pretty dump returns indented json ..........................   Passed    0.01 sec
+      Start 31: Lab 1 blocks large ECB input unless explicitly allowed
+31/44 Test #31: Lab 1 blocks large ECB input unless explicitly allowed ..........   Passed    0.01 sec
+      Start 32: stats rejects empty samples
+32/44 Test #32: stats rejects empty samples .....................................   Passed    0.01 sec
+      Start 33: json utils write and read json file
+33/44 Test #33: json utils write and read json file .............................   Passed    0.01 sec
+      Start 34: Lab 1 rejects invalid IV lengths
+34/44 Test #34: Lab 1 rejects invalid IV lengths ................................   Passed    0.01 sec
+      Start 35: Lab 1 AES-XTS rejects invalid key sizes
+35/44 Test #35: Lab 1 AES-XTS rejects invalid key sizes .........................   Passed    0.01 sec
+      Start 36: parse encoding is case insensitive
+36/44 Test #36: parse encoding is case insensitive ..............................   Passed    0.01 sec
+      Start 37: Lab 1 AES-CTR matches NIST SP 800-38A multi-block vector
+37/44 Test #37: Lab 1 AES-CTR matches NIST SP 800-38A multi-block vector ........   Passed    0.01 sec
+      Start 38: Lab 1 AES-CBC round trip works with padded file-style input
+38/44 Test #38: Lab 1 AES-CBC round trip works with padded file-style input .....   Passed    0.01 sec
+      Start 39: Lab 1 AES CTR round trip with partial block
+39/44 Test #39: Lab 1 AES CTR round trip with partial block .....................   Passed    0.01 sec
+      Start 40: base64 decode basic values
+40/44 Test #40: base64 decode basic values ......................................   Passed    0.01 sec
+      Start 41: stats summary includes confidence interval
+41/44 Test #41: stats summary includes confidence interval ......................   Passed    0.01 sec
+      Start 42: parse encoding supports raw hex base64
+42/44 Test #42: parse encoding supports raw hex base64 ..........................   Passed    0.01 sec
+      Start 43: Lab 1 AES-XTS round trip works for sector-sized data
+43/44 Test #43: Lab 1 AES-XTS round trip works for sector-sized data ............   Passed    0.01 sec
+      Start 44: hex decode roundtrip
+44/44 Test #44: hex decode roundtrip ............................................   Passed    0.01 sec
+
+100% tests passed, 0 tests failed out of 44
+
+Total Test time (real) =   0.53 sec

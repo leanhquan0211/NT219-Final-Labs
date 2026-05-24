@@ -1,8 +1,8 @@
 ﻿# Lab 1 Final Verification Log
 
-Generated at: 2026-05-23 18:52:50
+Generated at: 2026-05-24 11:18:07
 
-Configuration: msvc
+Configuration: mingw
 
 This log records final local verification commands for Lab 1 AES Crypto++.
 

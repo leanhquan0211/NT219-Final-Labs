@@ -69,3 +69,80 @@ samples/keys/*
 # Report exported files
 report/*.pdf
 report/*.docx
+# Stage 3F: keep curated Lab 1 report evidence and deliverables
+benchmarks/results/
+benchmarks/plots/
+
+!report/
+!report/**
+!report/lab1/
+!report/lab1/**
+!report/figures/
+!report/figures/**
+!report/tables/
+!report/tables/**
+
+!report/**/*.md
+!report/**/*.txt
+!report/**/*.csv
+!report/**/*.png
+
+!bin/
+!bin/**
+!bin/windows-mingw/**
+!bin/windows-msvc/**
+!bin/linux/**
+
+# Stage 3F: generated benchmark workspace can be ignored
+benchmarks/results/
+benchmarks/plots/
+
+# Stage 3F: keep curated report evidence
+!report/
+!report/**
+!report/lab1/
+!report/lab1/**
+!report/figures/
+!report/figures/**
+!report/tables/
+!report/tables/**
+!report/**/*.md
+!report/**/*.txt
+!report/**/*.csv
+!report/**/*.png
+
+# Stage 3F: keep deliverable binaries for course archive
+!bin/
+!bin/**
+!bin/windows-mingw/**
+!bin/windows-msvc/**
+!bin/linux/**
+
+# Stage 3F generated workspace can be ignored
+benchmarks/results/
+benchmarks/plots/
+
+# Stage 3F curated report evidence must be kept
+!report/
+!report/**
+!report/lab1/
+!report/lab1/**
+!report/figures/
+!report/figures/**
+!report/tables/
+!report/tables/**
+!report/**/*.md
+!report/**/*.txt
+!report/**/*.csv
+!report/**/*.png
+
+# Stage 3F binary deliverables
+!bin/
+!bin/**
+!bin/windows-mingw/**
+!bin/windows-msvc/**
+!bin/linux/**
+
+samples/*.ct
+samples/*recovered*
+samples/*nonce_db*

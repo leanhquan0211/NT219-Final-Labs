@@ -1,0 +1,5 @@
+Summary CSV written to: N:\UIT\HK2\NT219\Final_lab\benchmarks\plots\lab1_benchmark_summary.csv
+Plot written to: N:\UIT\HK2\NT219\Final_lab\benchmarks\plots\lab1_aes_throughput.png
+Plot written to: N:\UIT\HK2\NT219\Final_lab\benchmarks\plots\lab1_aes_latency.png
+Plot written to: N:\UIT\HK2\NT219\Final_lab\benchmarks\plots\lab1_aes_latency_ci_largest_payload.png
+Lab 1 plot generation completed.

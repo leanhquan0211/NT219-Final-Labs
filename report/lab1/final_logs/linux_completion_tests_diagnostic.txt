@@ -1,0 +1,11 @@
+Running Lab 1 completion tests with /mnt/n/UIT/HK2/NT219/Final_lab/build-linux/bin/aestool
+PASS: AES-XTS round trip succeeded.
+Fatal error: Nonce reuse detected for AES-gcm with this key. Refusing encryption.
+PASS: AES-GCM repeated key+nonce was rejected by nonce DB.
+[PASS] AES-128-CBC NIST SP 800-38A first block no padding
+[PASS] AES-128-CTR NIST SP 800-38A four blocks
+[PASS] AES-128-OFB NIST SP 800-38A four blocks
+[PASS] AES-128-GCM NIST empty plaintext tag only
+[PASS] AES-128-GCM NIST one zero block ciphertext plus tag
+Summary: passed=5 failed=0
+All Lab 1 completion tests passed.
