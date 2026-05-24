@@ -146,3 +146,30 @@ benchmarks/plots/
 samples/*.ct
 samples/*recovered*
 samples/*nonce_db*
+# Stage 3F/3G curated report artifacts
+!report/
+!report/**
+!report/lab1/
+!report/lab1/**
+!report/figures/
+!report/figures/**
+!report/tables/
+!report/tables/**
+!report/**/*.md
+!report/**/*.txt
+!report/**/*.csv
+!report/**/*.png
+
+# Deliverable binaries for final archive
+!bin/
+!bin/**
+!bin/windows-mingw/**
+!bin/windows-msvc/**
+!bin/linux/**
+
+# Generated Lab 1 temporary samples
+samples/*.ct
+samples/*recovered*
+samples/*nonce_db*
+samples/lab1_completion_*
+samples/lab1_final_*
