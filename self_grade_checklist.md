@@ -13,16 +13,46 @@
 - [ ] Required resource files
 - [ ] Academic integrity statement
 
-## Lab 1
+## Lab 1 Final Status
 
-- [ ] AES modes implemented
-- [ ] AEAD handling
-- [ ] IV/nonce handling
-- [ ] Nonce reuse prevention
-- [ ] KAT runner
-- [ ] Negative tests
-- [ ] Benchmark
-- [ ] Security discussion
+* [x] AES ECB
+
+* [x] AES CBC
+
+* [x] AES CFB
+
+* [x] AES OFB
+
+* [x] AES CTR
+
+* [x] AES XTS
+
+* [x] AES CCM
+
+* [x] AES GCM
+
+* [x] Known-answer tests
+
+* [x] Negative tests
+
+* [x] AEAD fail-closed verification
+
+* [x] Cross-platform builds
+
+* [x] Benchmark plots
+
+* [x] Benchmark tables
+
+* [x] Shared library export
+
+* [x] Python GUI
+
+* [x] MinGW backend
+
+* [x] MSVC backend
+
+* [x] Linux shared library
+
 
 ## Lab 2
 
