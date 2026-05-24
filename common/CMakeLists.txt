@@ -1,4 +1,4 @@
-add_library(nt219_common
+﻿add_library(nt219_common
     src/cli.cpp
     src/file_utils.cpp
     src/hex.cpp
@@ -11,6 +11,7 @@ add_library(nt219_common
     src/timer.cpp
     src/error.cpp
 )
+set_target_properties(nt219_common PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 target_include_directories(nt219_common
     PUBLIC
@@ -25,3 +26,4 @@ target_link_libraries(nt219_common
 )
 
 target_compile_features(nt219_common PUBLIC cxx_std_17)
+
